@@ -96,7 +96,6 @@ To complete the lab and get the tests passing, you will need to:
 
 - Create a `Login` resource with a `post()` method for logging in that
   responds to a `POST /login` request and returns the user as JSON.
-  
 - Create a `Logout` resource with a `delete()` method for logging out
   that responds to a `DELETE /logout` request.
 
@@ -142,7 +141,8 @@ Once you have all methods created, commit your code.
 #### Step 4: Create Signup Endpoint
 
 Create `POST /signup` endpoint. Implement the following:
-- Create a new user. 
+
+- Create a new user.
 - Save user to db with their hashed password using bcrypt.
 - Log the user in with sessions.
 - Return the user object.
@@ -152,7 +152,8 @@ Test your logic with `pytest` and commit your code.
 #### Step 5: Create Check Session Endpoint
 
 Create `GET /check_session` endpoint. Implement the following:
-- If the user is authenticated, return the user object in the JSON response. 
+
+- If the user is authenticated, return the user object in the JSON response.
 - Else, return an empty response with a 204 status code.
 
 Test your logic with `pytest` and commit your code.
@@ -160,14 +161,16 @@ Test your logic with `pytest` and commit your code.
 #### Step 6: Create Login Endpoint
 
 Create `POST /login` endpoint. Implement the following:
+
 - Log the user in with sessions.
 - Returns the user as JSON.
 
 Test your logic with `pytest` and commit your code.
 
 #### Step 7: Create Logout Endpoint
-  
+
 Create `DELETE /logout` endpoint. Implement the following:
+
 - Log the user out with sessions.
 
 Test your logic with `pytest` and commit your code.
@@ -188,18 +191,86 @@ If you created a separate feature branch, remember to open a PR on main and merg
 ### Task 4: Document and Maintain
 
 Optional Best Practice documentation steps:
-* Add comments to the code to explain purpose and logic, clarifying intent and 
-functionality of your code to other developers.
-* Update README text to reflect the functionality of the application following 
-https://makeareadme.com. 
-  * Add screenshot of completed work included in Markdown in README.
-* Delete any stale branches on GitHub
-* Remove unnecessary/commented out code
-* If needed, update git ignore to remove sensitive data
+
+- Add comments to the code to explain purpose and logic, clarifying intent and
+  functionality of your code to other developers.
+- Update README text to reflect the functionality of the application following
+  https://makeareadme.com.
+  - Add screenshot of completed work included in Markdown in README.
+- Delete any stale branches on GitHub
+- Remove unnecessary/commented out code
+- If needed, update git ignore to remove sensitive data
 
 ## Submit your solution
 
 CodeGrade will use the same test suite as the test suite included.
 
-Once all tests are passing, commit and push your work using `git` to submit to 
+Once all tests are passing, commit and push your work using `git` to submit to
 CodeGrade through Canvas.
+
+---
+
+## Password Protection & User Authentication
+
+This project includes secure user authentication using hashed passwords and Flask sessions.
+
+### Features Implemented
+
+- **User Model Enhancements**
+
+  - Passwords are securely hashed using `bcrypt` via a write-only `@hybrid_property`.
+  - Direct access to the hashed password is blocked for safety.
+  - A custom `.authenticate(password)` method verifies login attempts.
+
+- **Session-Based Auth**
+
+  - On successful login/signup, the user ID is stored in the session (`session['user_id']`).
+  - Session data is used to persist login state across requests.
+
+- **Implemented Routes**
+
+| Method | Endpoint         | Description                                |
+| ------ | ---------------- | ------------------------------------------ |
+| POST   | `/signup`        | Registers a new user and logs them in      |
+| POST   | `/login`         | Authenticates a user and starts a session  |
+| DELETE | `/logout`        | Ends the session by clearing `user_id`     |
+| GET    | `/check_session` | Returns the logged-in user's data (if any) |
+| DELETE | `/clear`         | Resets all session data (dev use only)     |
+
+### Security Measures
+
+- Passwords are never stored or transmitted in plain text.
+- `@hybrid_property` ensures password hashes cannot be retrieved.
+- Session cookies are used to persist login state securely.
+
+### Test Coverage
+
+All tests passed:
+
+- User creation and login at `/signup` and `/login`
+- Session verification via `/check_session`
+- Logout and session clearing at `/logout` and `/clear`
+
+---
+
+```bash
+Example Signup:
+POST /signup
+{
+  "username": "ash",
+  "password": "pikachu"
+}
+```
+
+```bash
+Example Login:
+POST /login
+{
+  "username": "ash",
+  "password": "pikachu"
+}
+```
+
+---
+
+This concludes the Password Protection section of the lab!
