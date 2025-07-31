@@ -67,9 +67,31 @@ class Login(Resource):
         return {"error": "Invalid username or password"}, 401
 
 
+class Logout(Resource):
+    def delete(self):
+        session['user_id'] = None
+        return {}, 204
+
+
+class CheckSession(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+
+        if not user_id:
+            return {}, 204
+
+        user = User.query.get(user_id)
+        if user:
+            return UserSchema().dump(user), 200
+
+        return {}, 204  # Fallback session exists but user not found
+
+
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
+api.add_resource(CheckSession, '/check_session')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
